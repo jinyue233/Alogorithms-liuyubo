@@ -1,5 +1,7 @@
 package sorting_basic.merge_sort_06;
 
+import sorting_basic.insertion_sort_03.InsertionSort;
+
 /**
  * 归并排序
  * 将数组不停的拆分进行排序，直到拆分粒度为1时为递归终止条件
@@ -9,25 +11,41 @@ package sorting_basic.merge_sort_06;
  *       将较小的数据保存到原数组的arr[l](arr[k])处。
  *       2，要注意越界的情况
  * 时间复杂度：O(nlogn)
+ *
+ * // 优化1： 对于对于arr[mid] <= arr[mid+1]的情况,不进行merge
+ * // 优化2：对于小规模数组，使用插入排序会更快；这里可以去掉归并排序if (l >= r) return的终止条件了
+ *
+ *
  */
-public class MergeSort {
-    public void mergeSort(int[] arr) {
+public class MergeSortOptimized {
+    public void mergeSort(Integer[] arr) {
         mergeSort(arr, 0, arr.length - 1);
     }
     // 递归使用归并排序，对arr[l..r]的范围进行排序
-    private void mergeSort(int[] arr, int l, int r) {
+    private void mergeSort(Integer[] arr, int l, int r) {
         // 这里表示当拆分数组进行排序时，当拆分粒度为1的时候，此时数组本来就是有序的，因此是递归结束的条件
-        if (l >= r) {
+        /*if (l >= r) {
             return;
+        }*/
+        // 优化2：对于小规模数组，使用插入排序会更快；这里可以去掉归并排序if (l >= r) return的终止条件了
+        if (r - l <= 5) {
+            new InsertionSort().sort(arr, l ,r);
+            return; //必须return回去，否则会递归报错
         }
         int mid = (r + l) / 2;
         mergeSort(arr, l, mid);
         mergeSort(arr, mid + 1, r);
-        merge(arr, l, mid, r);
+        // 想象一下，分为两部分的数据，当左半部分最右边元素大小小于等于右半部分最左边元素时，此时是不需要再归并排序的
+        // 优化1： 对于对于arr[mid] <= arr[mid+1]的情况,不进行merge
+        // 对于近乎有序的数组非常有效,但是对于一般情况,有一定的性能损失
+        if (arr[mid] > arr[mid + 1]) {
+            merge(arr, l, mid, r);
+        }
+
     }
 
     // 将arr[l...mid]和arr[mid + 1...r]两部分进行归并
-    private void merge(int[] arr, int l, int mid, int r) {
+    private void merge(Integer[] arr, int l, int mid, int r) {
         int[] auxArr = new int[r - l + 1];
         for (int i = l; i <= r; i ++) {
             auxArr[i - l] = arr[i];
@@ -56,8 +74,8 @@ public class MergeSort {
     }
 
     public static void main(String[] args) {
-        int[] arr = {1,6,9,4,3,52,5,26,23,64,12};
-        new MergeSort().mergeSort(arr);
+        Integer[] arr = {1,6,9,4,3,52,5,26,23,64,12};
+        new MergeSortOptimized().mergeSort(arr);
         for (int i : arr) {
             System.out.println(i);
         }

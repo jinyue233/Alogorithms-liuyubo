@@ -21,7 +21,7 @@ import sorting_basic.selection_sort_using_comparable_02.SelectionSort;
  * 找出插入位置，将该元素插入到有序数列的合适位置中。
  */
 public class InsertionSort {
-
+    // 对整个数组进行排序
     public void sort(Comparable[] arr) {
         for (int i = 0; i < arr.length; i++) {
             /*for (int j = i; j > 0; j--) {
@@ -37,6 +37,24 @@ public class InsertionSort {
             }
         }
     }
+    // 对arr中l...r范围的数据进行排序
+    public void sort(Comparable[] arr, int l, int r) {
+        for (int i = l; i <= r; i++) {
+            /*for (int j = i; j > 0; j--) {
+                if (arr[j].compareTo(arr[j - 1]) < 0) {
+                    swap(arr, j, j - 1);
+                } else {
+                    break;
+                }
+            }*/
+
+            for (int j = i; j > l && arr[j].compareTo(arr[j - 1]) < 0; j--) {
+                swap(arr, j, j - 1);
+            }
+        }
+    }
+
+
     private static void swap(Comparable[] arr, int i, int j) {
         Comparable tmp = arr[i];
         arr[i] = arr[j];
@@ -48,7 +66,8 @@ public class InsertionSort {
        Integer[] arr = {10,9,8,7,6,5,4,3,2,1};
         // int[] arr = {1,2,3};
         // Student[] arr = {new Student("liming",100), new Student("zhangsan", 11), new Student("xiaohong", 15)};
-        SelectionSort.sort(arr);
+        //SelectionSort.sort(arr, 1, 4);
+        new InsertionSort().sort(arr, 1, 4);
         for( int  i = 0 ; i < arr.length ; i ++ ){
             System.out.print(arr[i]);
             System.out.print(' ');
